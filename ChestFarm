@@ -1,0 +1,86 @@
+-- Set the workspace gravity to 0
+game.Workspace.Gravity = 0
+
+-- TP4 function for tweening the movement
+function TP4(targetCFrame)
+    local player = game.Players.LocalPlayer
+    local humanoidRootPart = player.Character.HumanoidRootPart
+    local distance = (targetCFrame.Position - humanoidRootPart.Position).Magnitude
+    local speed
+
+    if distance < 250 then
+        speed = 200
+    elseif distance < 1000 then
+        speed = 350
+    else
+        speed = 210
+    end
+
+    local tween = game:GetService("TweenService"):Create(
+        humanoidRootPart,
+        TweenInfo.new(distance / speed, Enum.EasingStyle.Linear),
+        {CFrame = targetCFrame}
+    )
+    tween:Play()
+    tween.Completed:Wait()  -- Ensure the tween completes before proceeding
+end
+
+-- Function to teleport the player above the target and then move down
+local function TeleportAboveAndDescend(targetCFrame)
+    local aboveTargetPosition = targetCFrame.Position + Vector3.new(0, 75, 0) -- 100 studs above the target
+    local aboveTargetCFrame = CFrame.new(aboveTargetPosition)
+
+    -- Tween to the position directly above the target
+    TP4(aboveTargetCFrame)
+
+    -- Tween down to the target
+    TP4(targetCFrame)
+end
+
+-- Function to find the closest chest
+local function GetClosestChest()
+    local targetDistance = 20000
+    local target = nil
+    local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+
+    for _, v in ipairs(game:GetService("Workspace"):GetChildren()) do
+        if v.Name == "Chest1" or v.Name == "Chest2" or v.Name == "Chest3" then
+            local distance = (playerPosition - v.Position).Magnitude
+            if distance < targetDistance then
+                targetDistance = distance
+                target = v
+            end
+        end
+    end
+    return target
+end
+
+-- Coroutine to continuously teleport to the closest chest
+spawn(function()
+    while true do
+        local success, error = pcall(function()
+            local closestChest = GetClosestChest()
+            if closestChest then
+                TeleportAboveAndDescend(closestChest.CFrame)
+            end
+        end)
+        task.wait()
+        if not success then
+            warn(error)
+        end
+    end
+end)
+
+-- Coroutine to continuously disable collision for player parts
+spawn(function()
+    while true do
+        pcall(function()
+            for _, part in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end)
+        task.wait()
+    end
+end)
