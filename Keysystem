@@ -1,21 +1,8 @@
-local Players = game:GetService("Players")
-local CoreGui = game:GetService("CoreGui")
 
 
 
--- Check for HTTP spy components in CoreGui
-local function checkForHttpSpy()
-    for _, obj in pairs(CoreGui:GetDescendants()) do
-        if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
-            if string.find(string.lower(obj.Name), "spy") or string.find(string.lower(obj.Text), "spy") then
-                Players.LocalPlayer:Kick("HTTP Spy detected.")
-            end
-        end
-    end
-end
 
-checkForHttpSpy()
-CoreGui.ChildAdded:Connect(checkForHttpSpy)
+
 -- // The variables \\ --
 
 local Players = game:GetService("Players")
