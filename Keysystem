@@ -10,24 +10,7 @@ pcall(game.HttpGet, game, setmetatable({}, {
     end,
 }))
 
--- Monitor critical functions for suspicious activity
-local monitoredFunctions = {print, warn, error, writefile, makefolder, rconsoleprint, setclipboard, rconsoleerr, rconsolewarn}
-local forbiddenContent = {"githubusercontent", "YourGithubUsername"}
 
-for _, func in pairs(monitoredFunctions) do
-    local oldFunc = hookfunction(func, function(...)
-        local args = {...}
-        for _, arg in pairs(args) do
-            for _, forbidden in pairs(forbiddenContent) do
-                if string.find(string.lower(tostring(arg)), string.lower(forbidden)) then
-                    Players.LocalPlayer:Kick("Unauthorized operation detected.")
-                    return
-                end
-            end
-        end
-        return oldFunc(...)
-    end)
-end
 
 -- Check for HTTP spy components in CoreGui
 local function checkForHttpSpy()
