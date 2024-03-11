@@ -9,7 +9,7 @@ pcall(game.HttpGet, game, setmetatable({}, {
         return ""
     end,
 }))
-
+end 
 
 
 -- Check for HTTP spy components in CoreGui
