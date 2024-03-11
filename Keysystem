@@ -2,15 +2,6 @@ local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 
 
--- Protect against unexpected changes
-pcall(game.HttpGet, game, setmetatable({}, {
-    __tostring = function()
-        Players.LocalPlayer:Kick("Tampering detected.")
-        return ""
-    end,
-}))
-end 
-
 
 -- Check for HTTP spy components in CoreGui
 local function checkForHttpSpy()
